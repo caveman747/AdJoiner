@@ -1,49 +1,88 @@
 import os
-import sys
 import subprocess
+import getpass
+import pickle
+import sys
+from crontab import CronTab
+import tkinter as tk
+
+
 
 def get_choice(prompt, choices):
     valid = False
     while not valid:
         answer = input(prompt).strip()
+        answer = answer.upper()
         valid = answer in choices
+        if answer not in choices:
+            print("That answer is not in the list of choices, please select one of the answers below")
+            for x in range(len(choices)):
+                print(choices[x])
     return answer
 
 def root_checker():
     if os.geteuid() == 0:
         print("We're root!")
     else:
-        print("We're not root.")
-        subprocess.call(['sudo', 'python3', *sys.argv])
-        sys.exit()
+        print("We're not root. Enter the root password")
+        sudo_password = getpass.getpass(prompt='sudo password: ')
+        #below command just writes the output of ls with sudo to stderr making it "disappear"
+        p = subprocess.Popen(['sudo', '-S', 'ls'], stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+                             stdin=subprocess.PIPE)
+
+        try:
+            out, err = p.communicate(input=(sudo_password + '\n').encode(), timeout=5)
+
+        except subprocess.TimeoutExpired:
+            p.kill()
+
+def ChangeHostname():
+
+    answer = get_choice("Would you like to change your hostname?", ["YES","NO"])
+
+    if answer == "NO":
+        exit()
+
+    if answer == "YES":
+        hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        print("Currently, your hostname is " + hostname)
+        hostname = input("What do you want the hostname to be?")
+        subprocess.run(["hostnamectl", "set-hostname", hostname])
+        hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+        print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
+
+        # reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
+        # if reboot == "YES":
+        #     subprocess.run(["reboot", "now"])
+
 
 def main():
-    print ("hello world")
+    window = tk.Tk()
 
-    # hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-    # print(hostname)
-    # hostname = input("What do you want the hostname to be?")
-    # subprocess.run(["hostnamectl", "set-hostname", hostname ])
-    # hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-    # print(hostname)
+    label = tk.Label(text="If you wish to change the hostname, enter it below")
+    entry = tk.Entry()
+    label.pack()
+    entry.pack()
+    hostname = entry.get()
 
-
-    answer = True
-
-    returncode = subprocess.call(["/usr/bin/sudo", "/usr/bin/id"])
-    subprocess.run(["ssh-keygen", "-A"])
-
-    get_choice("Enter R to restart or Q to quit and move on to the next script",["R","Q"])
+    with open ("test.txt","wb")
 
 
-    # while answer:
-    #     print("If you changed the hostname it's a good idea to restart your system")
-    #     user_input = input("Enter R to restart or Q to quit and move on to the next script")
-    #     user_input.upper()
-    #     print(user_input)
-    #     if user_input ==
-    #     subprocess.run(["shutdown now"], stdout=subprocess.PIPE).stdout.decode('utf-8')
 
+    window.mainloop()
+
+    # with open("/home/john/PycharmProjects/AdJoiner/mirror", "wb") as fp:
+    #    pickle.dump(sys.argv[0], fp)
+    #
+    # from crontab import CronTab
+    # cron = CronTab(user=True)
+    # job = cron.new(command="/usr/bin/python3 /home/john/PycharmProjects/ADJoiner/testoasdfsnboot.py")
+    # job.every_reboot()
+    # cron.write()
+    #
+    # with open("/home/john/PycharmProjects/AdJoiner/mirror", "rb") as fp:
+    #     sys.argv[0] = pickle.load(fp)
+    # exit()
 
 
 
