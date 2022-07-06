@@ -3,8 +3,13 @@ import subprocess
 import getpass
 import pickle
 import sys
-from crontab import CronTab
+import threading
 import tkinter as tk
+from tkinter.messagebox import showinfo, askyesno
+
+from crontab import CronTab
+
+
 
 
 
@@ -36,40 +41,88 @@ def root_checker():
         except subprocess.TimeoutExpired:
             p.kill()
 
-def ChangeHostname():
+def ChangeHostname(hostname):
 
-    answer = get_choice("Would you like to change your hostname?", ["YES","NO"])
 
-    if answer == "NO":
-        exit()
+    subprocess.run(["hostnamectl", "set-hostname", hostname])
 
-    if answer == "YES":
-        hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-        print("Currently, your hostname is " + hostname)
-        hostname = input("What do you want the hostname to be?")
-        subprocess.run(["hostnamectl", "set-hostname", hostname])
-        hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-        print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
+    # answer = get_choice("Would you like to change your hostname?", ["YES","NO"])
+    #
+    # if answer == "NO":
+    #     exit()
+    #
+    # if answer == "YES":
+    #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    #     print("Currently, your hostname is " + hostname)
+    #     hostname = input("What do you want the hostname to be?")
+    #     subprocess.run(["hostnamectl", "set-hostname", hostname])
+    #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    #     print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
 
         # reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
         # if reboot == "YES":
         #     subprocess.run(["reboot", "now"])
 
-
 def main():
-    window = tk.Tk()
+    root = tk.Tk()
 
-    label = tk.Label(text="If you wish to change the hostname, enter it below")
-    entry = tk.Entry()
-    label.pack()
-    entry.pack()
-    hostname = entry.get()
+    canvas1 = tk.Canvas(root, width=400, height=300)
+    canvas1.pack()
 
-    with open ("test.txt","wb")
+    entry1 = tk.Entry(root)
+    canvas1.create_window(200, 140, window=entry1)
+
+    def root_checker():
+        if os.geteuid() == 0:
+            label1 = tk.Label(root, text= "We rooted!")
+            canvas1.create_window(200,230, window=label1)
+        else:
+            getpassword = entry1.get()
+            subprocess.Popen(['sudo', '-S', 'ls'], stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+                             stdin=subprocess.PIPE)
 
 
 
-    window.mainloop()
+        root.destroy()
+
+    button1 = tk.Button(text="Enter root password to elevate program", command=root_checker)
+    canvas1.create_window(200, 180, window=button1)
+
+    root.mainloop()
+
+    root = tk.Tk()
+    root.withdraw()
+    answer = askyesno('ADJoiner', 'Do you want to change hostname?')
+    #root.deiconify()
+    root.destroy()
+
+    if answer == True:
+        root = tk.Tk()
+
+        canvas1 = tk.Canvas(root, width=400, height=300)
+        canvas1.pack()
+
+        entry1 = tk.Entry(root)
+        canvas1.create_window(200, 140, window=entry1)
+
+        def ChangeHostname():
+            hostname = entry1.get()
+            subprocess.run(["hostnamectl", "set-hostname", hostname])
+            root.destroy()
+
+        button1 = tk.Button(text="Enter new hostname", command=ChangeHostname)
+        canvas1.create_window(200, 180, window=button1)
+
+        root.mainloop()
+
+    root = tk.Tk()
+    root.withdraw()
+    answer = askyesno('ADJoiner', 'Reboot now for hostname change to take effect?')
+
+    if answer == True:
+        subprocess.run(["reboot", "now"])
+
+
 
     # with open("/home/john/PycharmProjects/AdJoiner/mirror", "wb") as fp:
     #    pickle.dump(sys.argv[0], fp)

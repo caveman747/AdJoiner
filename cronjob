@@ -1,0 +1,1 @@
+@reboot /usr/bin/python3 /home/john/PycharmProjects/ADJoiner/testonboot.py 
