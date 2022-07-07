@@ -8,6 +8,8 @@ import tkinter as tk
 from tkinter.messagebox import showinfo, askyesno
 import time
 
+import YesorNoBox
+
 
 
 def get_choice(prompt, choices):
@@ -122,9 +124,15 @@ def main():
     #     subprocess.run(["reboot", "now"])
     #
     # subprocess.run(["sudo", "cp", "-i", "/home/john/PycharmProjects/AdJoiner/testonboot.py", "/bin" ])
-    bridge = open("/etc/xdg/autostart/bridge.desktop", "w")
-    bridge.writelines(["[Desktop Entry]", "\nType=Application", "\nName=Bridge", "\nExec=/usr/bin/python3 /bin/testonboot.py ","\nIcon=system-run", "\nX-GNOME-Autostart-enabled=true"])
-    bridge.close()
+    # bridge = open("/etc/xdg/autostart/bridge.desktop", "w")
+    # bridge.writelines(["[Desktop Entry]", "\nType=Application", "\nName=Bridge", "\nExec=/usr/bin/python3 /bin/testonboot.py ","\nIcon=system-run", "\nX-GNOME-Autostart-enabled=true"])
+    # bridge.close()
+
+    Change = YesorNoBox.AskChangeHostname("Something", "500x400")
+    Change.confirm()
+
+    # answer = YesorNoBox.AskChangeHostname.confirm(self=YesorNoBox)
+    # print(answer)
 
 
 if __name__ == "__main__":
