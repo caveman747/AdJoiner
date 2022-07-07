@@ -6,10 +6,8 @@ import sys
 import threading
 import tkinter as tk
 from tkinter.messagebox import showinfo, askyesno
-import psutil as psutil
 import time
 
-from crontab import CronTab
 
 
 def get_choice(prompt, choices):
@@ -57,10 +55,10 @@ def ChangeHostname(hostname):
     #     subprocess.run(["hostnamectl", "set-hostname", hostname])
     #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
     #     print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
-
-        # reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
-        # if reboot == "YES":
-        #     subprocess.run(["reboot", "now"])
+    #
+    #     reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
+    #     if reboot == "YES":
+    #         subprocess.run(["reboot", "now"])
 
 def main():
     # root = tk.Tk()
@@ -79,18 +77,18 @@ def main():
     #     time.sleep(10)
     #
     #     exit()
-
-            # getpassword = entry1.get()
-            # subprocess.Popen(['sudo', '-S', 'ls'], stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-            #                  stdin=subprocess.PIPE)
-
-
-
-    #button1 = tk.Button(text="Enter root password to elevate program", command=root_checker)
-    #canvas1.create_window(200, 180, window=button1)
-
-
-
+    #
+    #         getpassword = entry1.get()
+    #         subprocess.Popen(['sudo', '-S', 'ls'], stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+    #                          stdin=subprocess.PIPE)
+    #
+    #
+    #
+    # button1 = tk.Button(text="Enter root password to elevate program", command=root_checker)
+    # canvas1.create_window(200, 180, window=button1)
+    #
+    #
+    #
     # root = tk.Tk()
     # root.withdraw()
     # answer = askyesno('ADJoiner', 'Do you want to change hostname?')
@@ -122,37 +120,11 @@ def main():
     #
     # if answer == True:
     #     subprocess.run(["reboot", "now"])
-
-
-
-    # with open("/home/john/PycharmProjects/AdJoiner/mirror", "wb") as fp:
-    #    pickle.dump(sys.argv[0], fp)
     #
-    users = psutil.users()
-
-    userList = []
-
-    for i in (users):
-        userList.append(i.name)
-
-    print(userList)
-
-
-    # users = subprocess.check_output("who")
-    # set([x.split()[0] for x in users.splitlines()])
-    # print(users)
-
-    for i in userList:
-        cron = CronTab(user=i)
-        job = cron.new(command="/usr/bin/python3 /home/" + i +"/PycharmProjects/AdJoiner/testonboot.py")
-        job.every_reboot()
-        cron.write()
-    #
-    # with open("/home/john/PycharmProjects/AdJoiner/mirror", "rb") as fp:
-    #     sys.argv[0] = pickle.load(fp)
-    # exit()
-
-https://stackoverflow.com/questions/72633558/cant-make-a-cron-python-script-which-uses-tkinter
+    # subprocess.run(["sudo", "cp", "-i", "/home/john/PycharmProjects/AdJoiner/testonboot.py", "/bin" ])
+    bridge = open("/etc/xdg/autostart/bridge.desktop", "w")
+    bridge.writelines(["[Desktop Entry]", "\nType=Application", "\nName=Bridge", "\nExec=/usr/bin/python3 /bin/testonboot.py ","\nIcon=system-run", "\nX-GNOME-Autostart-enabled=true"])
+    bridge.close()
 
 
 if __name__ == "__main__":
