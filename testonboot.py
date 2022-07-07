@@ -3,11 +3,14 @@ import pickle
 import subprocess
 
 
+import tkinter as tk
+
+root = tk.Tk()
+
+canvas1 = tk.Canvas(root, width=400, height=300)
+canvas1.pack()
+
+root.mainloop()
 
 
-with open("/home/john/PycharmProjects/AdJoiner/mirror", "rb") as fp:
-    sys.argv[0] = pickle.load(fp)
-subprocess.run(["sudo", "ls"])
-
-print(test)
 # subprocess.run(["ssh-keygen", "-A"])
