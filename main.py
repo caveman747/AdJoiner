@@ -8,8 +8,7 @@ import tkinter as tk
 from tkinter.messagebox import showinfo, askyesno
 import time
 
-import YesorNoBox
-
+import tkinterclasses
 
 
 def get_choice(prompt, choices):
@@ -24,13 +23,14 @@ def get_choice(prompt, choices):
                 print(choices[x])
     return answer
 
+
 def root_checker():
     if os.geteuid() == 0:
         print("We're root!")
     else:
         print("We're not root. Enter the root password")
         sudo_password = getpass.getpass(prompt='sudo password: ')
-        #below command just writes the output of ls with sudo to stderr making it "disappear"
+        # below command just writes the output of ls with sudo to stderr making it "disappear"
         p = subprocess.Popen(['sudo', '-S', 'ls'], stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                              stdin=subprocess.PIPE)
 
@@ -40,27 +40,28 @@ def root_checker():
         except subprocess.TimeoutExpired:
             p.kill()
 
-def ChangeHostname(hostname):
 
-
-    subprocess.run(["hostnamectl", "set-hostname", hostname])
-
-    # answer = get_choice("Would you like to change your hostname?", ["YES","NO"])
-    #
-    # if answer == "NO":
-    #     exit()
-    #
-    # if answer == "YES":
-    #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-    #     print("Currently, your hostname is " + hostname)
-    #     hostname = input("What do you want the hostname to be?")
-    #     subprocess.run(["hostnamectl", "set-hostname", hostname])
-    #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
-    #     print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
-    #
-    #     reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
-    #     if reboot == "YES":
-    #         subprocess.run(["reboot", "now"])
+# def ChangeHostname(hostname):
+#
+#
+#     subprocess.run(["hostnamectl", "set-hostname", hostname])
+#
+#     # answer = get_choice("Would you like to change your hostname?", ["YES","NO"])
+#     #
+#     # if answer == "NO":
+#     #     exit()
+#     #
+#     # if answer == "YES":
+#     #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+#     #     print("Currently, your hostname is " + hostname)
+#     #     hostname = input("What do you want the hostname to be?")
+#     #     subprocess.run(["hostnamectl", "set-hostname", hostname])
+#     #     hostname = (subprocess.run(['hostname'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+#     #     print("Your hostname will be changed to " + hostname + " You must reboot the computer for the change to take effect")
+#     #
+#     #     reboot = get_choice("Do you want to reboot now?", ["YES", "NO"])
+#     #     if reboot == "YES":
+#     #         subprocess.run(["reboot", "now"])
 
 def main():
     # root = tk.Tk()
@@ -127,12 +128,20 @@ def main():
     # bridge = open("/etc/xdg/autostart/bridge.desktop", "w")
     # bridge.writelines(["[Desktop Entry]", "\nType=Application", "\nName=Bridge", "\nExec=/usr/bin/python3 /bin/testonboot.py ","\nIcon=system-run", "\nX-GNOME-Autostart-enabled=true"])
     # bridge.close()
+    #
+    # tkinterclasses.Window("Welcome to AdJoiner", "600x300",
+    #                        "This is AdJoiner designed to make joining an Ubuntu box to Windows domain \n that much easier")
+    #
+    # hostnameQuery = tkinterclasses.AskYesorNo("Changing Hostname", "600x300", "Do you want to change your hostname?")
 
-    Change = YesorNoBox.AskChangeHostname("Something", "500x400")
-    Change.confirm()
 
-    # answer = YesorNoBox.AskChangeHostname.confirm(self=YesorNoBox)
-    # print(answer)
+    tkinterclasses.EntryOKCancel("Test", "600x400", "Test2")
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
