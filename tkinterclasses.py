@@ -149,6 +149,14 @@ class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
 
             subprocess.run(["sudo", "update-ca-certificates"])
 
+            output = "Certificates downloaded to the appropriate directories, running update-ca-certificates. "
+
+            return output
+
+        def DownloadFinished():
+            DownloadFinishedOutput.config(text=DownloadCertificates())
+
+
         self.button = tk.Button(self, text="Check IP address for certs",
                                 command=lambda: outputCerts())
 
@@ -160,11 +168,28 @@ class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
         IPAddresOutput = tk.Label(self)
         IPAddresOutput.pack()
 
-        Yes = tk.Button(self, text = "Yes", command=lambda: downloadCerts())
+        Yes = tk.Button(self, text = "Yes", command=lambda: [downloadCerts(), DownloadFinished()])
         No = tk.Button (self, text="No", command= lambda: master.switch_Canvas(StartUpPage))
         Yes.place(x=350,y=150)
         No.place(x=400,y=150)
 
+        DownloadFinishedOutput = tk.Label(self)
+        DownloadFinishedOutput.pack()
+
+
+
         # pack the canvas inside the self (frame).
         self.canvas.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
+# class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
+#     def __init__(self, master, *args, **kwargs):
+#         # self is now an istance of tk.Frame
+#         tk.Frame.__init__(self, master, *args, **kwargs)
+#         # make a new Canvas whose parent is self.
+#         self.canvas = tk.Canvas(self, height=200 ,width=430)
+#         self.label = tk.Label(self, text= "Enter the location of the SSL certificates can be IP address or pre-downloaded into a directory location").pack(side="top", fill="x", pady=5)
+#
+#         self.IPEntry = tk.Entry(self)
+#         self.IPEntry.pack()
+#
+#         self.URL = self.IPEntry.get()
