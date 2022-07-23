@@ -12,14 +12,9 @@ import sys
 def main():
 
 
-
-
-
     test = tkinterclasses.AdJoiner()
 
     test.mainloop()
-
-
 
 
 

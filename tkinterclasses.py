@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 
 import tkinter as tk
-
+from tkinter.ttk import Progressbar
 #the skeleton of this is ripped directly from the answer to this stack overflow question
 #https://stackoverflow.com/questions/63017238/how-to-switch-between-different-tkinter-canvases-from-a-start-up-page-and-return
 
@@ -149,13 +149,12 @@ class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
 
             subprocess.run(["sudo", "update-ca-certificates"])
 
-            output = "Certificates downloaded to the appropriate directories, running update-ca-certificates. "
+            output = "Certificates downloaded to the appropriate directories. Running update-ca-certificates so that certs take effect. "
 
             return output
 
-        def DownloadFinished():
-            DownloadFinishedOutput.config(text=DownloadCertificates())
-
+        # def DownloadFinished():
+        #     DownloadFinishedOutput.config(text=downloadCerts())
 
         self.button = tk.Button(self, text="Check IP address for certs",
                                 command=lambda: outputCerts())
@@ -168,28 +167,53 @@ class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
         IPAddresOutput = tk.Label(self)
         IPAddresOutput.pack()
 
-        Yes = tk.Button(self, text = "Yes", command=lambda: [downloadCerts(), DownloadFinished()])
-        No = tk.Button (self, text="No", command= lambda: master.switch_Canvas(StartUpPage))
-        Yes.place(x=350,y=150)
-        No.place(x=400,y=150)
+        Yes = tk.Button(self, text = "Yes", command= lambda: [ master.switch_Canvas(RequiredPackagesClearCaches), downloadCerts()])
+        No = tk.Button (self, text= "No", command= lambda: master.switch_Canvas(StartUpPage))
+
+        Yes.pack()
+        No.pack()
+
 
         DownloadFinishedOutput = tk.Label(self)
         DownloadFinishedOutput.pack()
 
-
-
         # pack the canvas inside the self (frame).
         self.canvas.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
-# class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
-#     def __init__(self, master, *args, **kwargs):
-#         # self is now an istance of tk.Frame
-#         tk.Frame.__init__(self, master, *args, **kwargs)
-#         # make a new Canvas whose parent is self.
-#         self.canvas = tk.Canvas(self, height=200 ,width=430)
-#         self.label = tk.Label(self, text= "Enter the location of the SSL certificates can be IP address or pre-downloaded into a directory location").pack(side="top", fill="x", pady=5)
-#
-#         self.IPEntry = tk.Entry(self)
-#         self.IPEntry.pack()
-#
-#         self.URL = self.IPEntry.get()
+
+class RequiredPackagesClearCaches(tk.Frame):
+    def __init__(self, master, *args, **kwargs):
+        tk.Frame.__init__(self, master, *args, **kwargs)
+        self.canvas = tk.Canvas(self, height=200 ,width=430)
+
+        def installPackages():
+            list = ["packagekit", "krb5-user", "facter", "sssd-tools", "sssd", "libnss-sss", "libpam-sss", "adcli", "samba-common-bin", "realmd", "gss-ntlmssp", "sssd-dbus", "oddjob", "oddjob-mkhomedir"]
+            for i in list:
+                subprocess.run(["sudo", "apt", "install", i])
+                self.canvas.update_idletasks()
+                pb["value"] += 7
+                if i == "oddjob-mkhomedir":
+                    pb["value"] = 100
+                    self.canvas.update_idletasks()
+                txt["text"] = pb['value'], '%'
+
+        def clearCaches():
+            subprocess.run(["systemctl", "stop", "sssd.service"])
+            subprocess.run(["rm", "-rf" "/var/lib/sss/db/*"])
+            subprocess.run(["rm", "/etc/krb5.keytab"])
+
+        pb = Progressbar(self.canvas, orient=tk.HORIZONTAL, length=100, mode="determinate")
+        pb.pack()
+
+        txt = tk.Label(self.canvas, text="0", bg="#345",fg="#fff")
+        txt.pack()
+
+        StartDownload = tk.Button(self.canvas, text="Install Required Packages and clear necessary caches", command= lambda: [installPackages(), clearCaches()])
+        StartDownload.pack()
+
+
+        self.canvas.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+
+
+
