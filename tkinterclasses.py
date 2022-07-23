@@ -173,9 +173,8 @@ class DownloadCertificates(tk.Frame):  # Sub-lcassing tk.Frame
         Yes.pack()
         No.pack()
 
-
-        DownloadFinishedOutput = tk.Label(self)
-        DownloadFinishedOutput.pack()
+        # DownloadFinishedOutput = tk.Label(self)
+        # DownloadFinishedOutput.pack()
 
         # pack the canvas inside the self (frame).
         self.canvas.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
